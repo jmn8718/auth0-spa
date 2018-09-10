@@ -2,6 +2,11 @@ import auth0 from "auth0-js";
 import { AUTH_CONFIG, PRIVATE_PATH, HOME_PATH } from "../../config";
 import { history } from "..";
 
+const ACCESS_TOKEN = "access_token";
+const EXPIRES_AT = "expires_at";
+const ID_TOKEN = "id_token";
+const TOKEN_TYPE = "token_type";
+
 class Auth {
   auth0 = new auth0.WebAuth({
     domain: AUTH_CONFIG.domain,
@@ -40,18 +45,21 @@ class Auth {
     let expiresAt = JSON.stringify(
       authResult.expiresIn * 1000 + new Date().getTime()
     );
-    localStorage.setItem("access_token", authResult.accessToken);
-    localStorage.setItem("id_token", authResult.idToken);
-    localStorage.setItem("expires_at", expiresAt);
+    console.log(authResult);
+    localStorage.setItem(ACCESS_TOKEN, authResult.accessToken);
+    localStorage.setItem(ID_TOKEN, authResult.idToken);
+    localStorage.setItem(TOKEN_TYPE, authResult.tokenType);
+    localStorage.setItem(EXPIRES_AT, expiresAt);
     // navigate to the home route
     history.replace(PRIVATE_PATH);
   }
 
   logout() {
     // Clear access token and ID token from local storage
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("id_token");
-    localStorage.removeItem("expires_at");
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(ID_TOKEN);
+    localStorage.removeItem(TOKEN_TYPE);
+    localStorage.removeItem(EXPIRES_AT);
     // navigate to the home route
     history.replace(HOME_PATH);
   }
@@ -59,7 +67,7 @@ class Auth {
   isAuthenticated() {
     // Check whether the current time is past the
     // access token's expiry time
-    let expiresAt = JSON.parse(localStorage.getItem("expires_at"));
+    let expiresAt = JSON.parse(localStorage.getItem(EXPIRES_AT));
     return new Date().getTime() < expiresAt;
   }
 }
