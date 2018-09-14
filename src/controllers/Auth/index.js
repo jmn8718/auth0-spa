@@ -1,6 +1,12 @@
 import auth0 from "auth0-js";
-import { AUTH_CONFIG, PRIVATE_PATH, HOME_PATH } from "../../config";
-import { history } from "..";
+import {
+  AUTH_CONFIG,
+  PRIVATE_PATH,
+  HOME_PATH
+} from "../../config";
+import {
+  history
+} from "..";
 
 const ACCESS_TOKEN = "access_token";
 const EXPIRES_AT = "expires_at";
@@ -13,7 +19,7 @@ class Auth {
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
     responseType: "token id_token",
-    scope: "openid"
+    scope: "openid profile"
   });
 
   constructor() {
@@ -45,7 +51,7 @@ class Auth {
     let expiresAt = JSON.stringify(
       authResult.expiresIn * 1000 + new Date().getTime()
     );
-    console.log(authResult);
+
     localStorage.setItem(ACCESS_TOKEN, authResult.accessToken);
     localStorage.setItem(ID_TOKEN, authResult.idToken);
     localStorage.setItem(TOKEN_TYPE, authResult.tokenType);
@@ -70,6 +76,27 @@ class Auth {
     let expiresAt = JSON.parse(localStorage.getItem(EXPIRES_AT));
     return new Date().getTime() < expiresAt;
   }
+
+  getAccessToken() {
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      throw new Error('No Access Token found');
+    }
+    return accessToken;
+  }
+
+  getProfile() {
+    let accessToken = this.getAccessToken();
+    return new Promise((resolve, reject) => {
+      this.auth0.client.userInfo(accessToken, function(err, profile) {
+        if (profile) {
+          resolve(profile)
+        }
+        reject(err);
+      });
+    })
+  }
+
 }
 
 const auth = new Auth();
