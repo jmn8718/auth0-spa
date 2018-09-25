@@ -66,8 +66,8 @@ class Auth {
     localStorage.removeItem(ID_TOKEN);
     localStorage.removeItem(TOKEN_TYPE);
     localStorage.removeItem(EXPIRES_AT);
-    // navigate to the home route
-    history.replace(HOME_PATH);
+    // logout user in auth0
+    this.auth0.logout({ returnTo: AUTH_CONFIG.returnTo });
   }
 
   isAuthenticated() {
