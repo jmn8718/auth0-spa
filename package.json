@@ -16,5 +16,19 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "description": "This project is a test exercise for [Auth0](https://auth0.com/) for a SPA using [React](https://reactjs.org/)",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmn8718/auth0-spa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jmn8718/auth0-spa/issues"
+  },
+  "homepage": "https://github.com/jmn8718/auth0-spa#readme"
 }
