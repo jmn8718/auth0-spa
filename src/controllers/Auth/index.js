@@ -1,8 +1,7 @@
 import auth0 from "auth0-js";
 import {
   AUTH_CONFIG,
-  PRIVATE_PATH,
-  HOME_PATH
+  PRIVATE_PATH
 } from "../../config";
 import {
   history
