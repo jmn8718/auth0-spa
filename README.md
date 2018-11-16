@@ -120,3 +120,53 @@ const Callback = props => {
 };
 ```
 Once the controllers store the data in the localStorage, it will redirect the client to other route of our app, in this demo, we redirect to the dashboard page
+
+## Handle logout
+In order to logout the user, we will use auth0 logout function, so the token is revoked and can not be used anymore. More information in [Auth0 documentation](https://auth0.com/docs/logout).
+First we should go to Auth0 [Application](https://manage.auth0.com/#/applications)'s page. Then we click on the app and go to `Allowed Logout URLs`, there we should set the url where we want to redirect the client after a success logout. For example, in we use localhost for development, we should set `http://localhost:3000`, so we redirect the user to the main page.
+Then on the client side, we have to setup a logout function in our Auth Controller. We will remove the values from localstorage and the user auth0 object to call the logout endpoint.
+```
+  logout(redirect = false) {
+    // Clear access token and ID token from local storage
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(ID_TOKEN);
+    localStorage.removeItem(TOKEN_TYPE);
+    localStorage.removeItem(EXPIRES_AT);
+    
+    // logout user in auth0
+    if (redirect) {
+      this.auth0.logout({ returnTo: AUTH_CONFIG.returnTo });
+    } else {
+      this.auth0.logout();
+    }
+  }
+```
+
+## Refresh token
+As the token has an expiration date, we might want to get a new token for the user without their interaction. For that we can use auth0 checkSession to request for a new one.
+First we should go to Auth0 [Application](https://manage.auth0.com/#/applications)'s page. Then we click on the app and go to `Allowed Origins (CORS)` and `Allowed Web Origins`, there we should set the url where we are going to do the request. For example, in we use localhost for development, we should set `http://localhost:3000` as we will serve the client on that url, so the origins of the request will come from this url.
+Then in our Auth controlle, we will define a function that will return the new token. Once we receive it, we will update the token in the localStorage.
+```
+checkSession() {
+    return new Promise((resolve) => {
+      this.auth0.checkSession(this.authorizationOptions, (err, data) => {
+        if (err) {
+          alert(`Error: ${err.error}. Check the console for further details.`);
+        } else {
+          localStorage.setItem(SESSION_TOKEN_DATA, JSON.stringify(data));
+        }
+        resolve();
+      });
+    });
+  }
+```
+We can ask for a property on the `idToken` called `auth_time` that is the timestamp (in seconds) when the user authenticated. In order to get that we have to pass `max_age (seconds)` when we request the token on the **Login**.
+```
+this.auth0.authorize({ max_age: 3600 });
+```
+On the authorize, this value will not do anything but can be used later.
+So if we request for a new token with *checkSession* if we pass also *max_age* on the request
+```
+this.auth0.checkSession({ max_age: 3600 }, (err, data) => 
+```
+It will check if the auth_time has exceeded the *max_age*, in that case it will return an error so the client can handle it according to the response. For example, if we want to restrict access to one page if the user was authenticated before X seconds, for example in order to the user to be able to update their profile, we use this checkSession to verify when the user logged last time in order to add some extra security.

@@ -7,8 +7,10 @@ import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 
 import { Auth } from "../../controllers";
+import { TokenData } from '../../components';
 
 const styles = theme => ({
   root: {
@@ -26,6 +28,9 @@ const styles = theme => ({
   },
   card: {
     // maxWidth: 400,
+  },
+  button: {
+    margin: theme.spacing.unit,
   },
   avatar: {
     margin: 10,
@@ -51,23 +56,33 @@ const STYLE = {
 class MenuAppBar extends Component {
   state = {
     ready: false,
-    user: undefined
+    user: undefined,
+    session: {}
   };
 
   componentDidMount() {
     if (Auth.isAuthenticated()) {
-      this.getUserInfo()
+      this.getUserInfo();
     }
   }
 
   getUserInfo = async () => {
-    let user = await Auth.getProfile()
-    this.setState({ ready: true, user })
+    let user = await Auth.getProfile();
+    this.setState({ ready: true, user });
+  }
+
+  checkSession = async () => {
+    await Auth.checkSession();
+    this.getSession()
+  }
+
+  getSession = () => {
+    this.setState({ session: Auth.getSession() });
   }
 
   render() {
     const {
-      ready, user
+      ready, user, session
     } = this.state
     const { classes } = this.props
     if (!ready) {
@@ -88,6 +103,23 @@ class MenuAppBar extends Component {
             </Typography>
           </CardContent>
         </Card>
+        <Button variant="contained" href="/profile" className={classes.button}>
+          Profile
+        </Button>
+
+        <Button variant="contained" onClick={this.checkSession} className={classes.button}>
+          Check Session
+        </Button>
+
+        <Button variant="contained" onClick={this.getSession} className={classes.button}>
+          Get Session
+        </Button>
+        {session.auth && (
+          <TokenData data={session.auth} title="Auth" />
+        )}
+        {session.session && (
+          <TokenData data={session.session} title="Session" />
+        )}
       </div>
     );
   }
