@@ -117,6 +117,11 @@ class Auth {
     return accessToken;
   }
 
+  getIdToken() {
+    const idToken = localStorage.removeItem(ID_TOKEN);
+    return idToken || 'no_id_token';
+  }
+
   getProfile() {
     let accessToken = this.getAccessToken();
     return new Promise((resolve, reject) => {
@@ -148,7 +153,8 @@ class Auth {
     const sessionData = localStorage.getItem(SESSION_TOKEN_DATA) || '{}';
     return {
       auth: JSON.parse(authData),
-      session: JSON.parse(sessionData)
+      session: JSON.parse(sessionData),
+      idToken: localStorage.getItem(ID_TOKEN) || 'no_id_token'
     }
   }
 

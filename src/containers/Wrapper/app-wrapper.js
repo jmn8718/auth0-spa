@@ -19,7 +19,24 @@ const styles = {
 };
 
 class Wrapper extends Component {
-  state = {};
+  state = {
+    ready: false,
+    user: undefined
+  };
+
+  componentDidMount() {
+    this.getUserInfo();
+  }
+
+  getUserInfo = () => {
+    setTimeout(async () => {
+      let user;
+      if (Auth.isAuthenticated()) {
+        user = await Auth.getProfile();
+      }
+      this.setState({ ready: true, user });
+    }, 500);
+  }
 
   onLogin = () => {
     Auth.login();
@@ -31,6 +48,7 @@ class Wrapper extends Component {
 
   render() {
     const { classes, children } = this.props;
+    const { ready, user } = this.state;
     const isAuthenticated = Auth.isAuthenticated();
     return (
       <div className={classes.root}>
@@ -43,11 +61,12 @@ class Wrapper extends Component {
             >
               {process.env.REACT_APP_NAME}
             </Typography>
-            <AuthMenu
+            {ready && <AuthMenu
               isAuthenticated={isAuthenticated}
+              user={user}
               login={this.onLogin}
               logout={this.onLogout}
-            />
+            />}
           </Toolbar>
         </AppBar>
         <ContentWrapper>{children}</ContentWrapper>

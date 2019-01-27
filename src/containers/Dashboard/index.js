@@ -114,6 +114,7 @@ class MenuAppBar extends Component {
         <Button variant="contained" onClick={this.getSession} className={classes.button}>
           Get Session
         </Button>
+        {session.idToken && <h2>{session.idToken}</h2>}
         {session.auth && (
           <TokenData data={session.auth} title="Auth" />
         )}

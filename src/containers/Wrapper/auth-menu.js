@@ -5,14 +5,19 @@ import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { withStyles } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
+import Avatar from '@material-ui/core/Avatar';
 
 const styles = theme => ({
+  avatar: {
+    height: 36,
+    width: 36
+  },
   button: {
     margin: theme.spacing.unit
   }
 });
 
-const AuthMenu = ({ isAuthenticated = false, login, logout, classes }) =>
+const AuthMenu = ({ isAuthenticated = false, user = {}, login, logout, classes }) =>
   isAuthenticated ? (
     <Tooltip title="Logout" placement="bottom">
       <IconButton
@@ -21,7 +26,10 @@ const AuthMenu = ({ isAuthenticated = false, login, logout, classes }) =>
         color="inherit"
         onClick={logout}
       >
-        <AccountCircle />
+        { user && user.picture ?
+          <Avatar alt={user.nickname} src={user.picture} className={classes.avatar} /> :
+          <AccountCircle />
+        }
       </IconButton>
     </Tooltip>
   ) : (

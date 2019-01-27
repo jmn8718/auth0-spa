@@ -7,7 +7,7 @@ export const LOGOUT_CALLBACK_PATH = "";
 export const DETAILS_PATH = "/details";
 export const PROFILE_PATH = "/profile";
 
-export const MAX_AUTH_TIME = 2 * 60; // 2 minutes, time in seconds
+export const MAX_AUTH_TIME = 200 * 60; // 2 minutes, time in seconds
 
 export const AUTH_CONFIG = {
   domain: process.env.REACT_APP_DOMAIN,
