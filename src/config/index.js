@@ -9,10 +9,18 @@ export const PROFILE_PATH = "/profile";
 
 export const MAX_AUTH_TIME = 200 * 60; // 2 minutes, time in seconds
 
-export const AUTH_CONFIG = {
-  domain: process.env.REACT_APP_DOMAIN,
-  clientId: process.env.REACT_APP_CLIENT_ID,
+function generateAuthConfiguration(zone = '') {
+  const appendZone = zone ? `_${zone.toUpperCase()}` : '';
+  return {
+    // domain: 'cd-sus.cnames.local.dev.auth0.com',
+    domain: process.env[`REACT_APP_DOMAIN${appendZone}`],
+    clientId: process.env[`REACT_APP_CLIENT_ID${appendZone}`],
   callbackUrl: `${APP_ENDPOINT}${CALLBACK_PATH}`,
   returnTo: `${APP_ENDPOINT}${LOGOUT_CALLBACK_PATH}`,
-  continue: `https://${process.env.REACT_APP_DOMAIN}/continue`
+    continue: `https://${process.env[`REACT_APP_DOMAIN${appendZone}`]}/continue`
 };
+}
+
+const ENV_KEY = 'SA1'
+export const IDP_LOGIN = process.env[`REACT_APP_CLIENT_IDP_LOGIN_${ENV_KEY}`];
+export const AUTH_CONFIG = generateAuthConfiguration(ENV_KEY);
