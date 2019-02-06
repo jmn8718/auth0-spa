@@ -67,8 +67,14 @@ class MenuAppBar extends Component {
   }
 
   getUserInfo = async () => {
-    let user = await Auth.getProfile();
-    this.setState({ ready: true, user });
+    try {
+      let user = await Auth.getProfile();
+      this.setState({ ready: true, user });
+    } catch (error) {
+      if (error.statusCode === 401) {
+        await Auth.logout();
+      }
+    }
   }
 
   checkSession = async () => {
