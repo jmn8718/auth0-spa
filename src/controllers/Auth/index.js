@@ -39,7 +39,7 @@ class Auth {
   }
 
   handleAuthentication() {
-    this.auth0.parseHash((err, authResult) => {
+    this.auth0.parseHash({ __enableIdPInitiatedLogin: AUTH_CONFIG.enableIdPInitiatedLogin }, (err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult);
         history.replace(PRIVATE_PATH);
