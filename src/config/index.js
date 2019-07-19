@@ -21,6 +21,6 @@ function generateAuthConfiguration(zone = '') {
   };
 }
 
-const ENV_KEY = 'SA1'
+const ENV_KEY = 'EU'
 export const AUTH_CONFIG = generateAuthConfiguration(ENV_KEY);
-export const IDP_LOGIN = `${process.env[`REACT_APP_CLIENT_IDP_LOGIN_${ENV_KEY}`]}?redirect_uri=${AUTH_CONFIG.callbackUrl}`;
+export const IDP_LOGIN = process.env[`REACT_APP_CLIENT_IDP_LOGIN_${ENV_KEY}`] && `${process.env[`REACT_APP_CLIENT_IDP_LOGIN_${ENV_KEY}`]}?redirect_uri=${AUTH_CONFIG.callbackUrl}`;

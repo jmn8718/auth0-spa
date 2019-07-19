@@ -22,8 +22,7 @@ class Auth {
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
     responseType: "token id_token",
-    scope: "openid profile",
-    audience: 'api'
+    scope: "openid profile email"
   });
 
   constructor(options = {}) {
@@ -126,7 +125,7 @@ class Auth {
   getProfile() {
     let accessToken = this.getAccessToken();
     return new Promise((resolve, reject) => {
-      this.auth0.client.userInfo(accessToken, function(err, profile) {
+      this.auth0.client.userInfo(accessToken, function (err, profile) {
         if (profile) {
           resolve(profile)
         }
